@@ -93,6 +93,34 @@ export const ui = {
     "comments.title": "Lo que dicen nuestros usuarios",
     "comments.description":
       "Descubre cómo NeuroZen ha transformado la vida de miles de personas",
+    "comments.previous": "Anterior",
+    "comments.next": "Siguiente",
+    "comments.0.role": "Gerente de Recursos Humanos",
+    "comments.0.text":
+      "NeuroZen ha transformado completamente nuestra cultura organizacional. Los ejercicios de meditación han reducido significativamente el estrés de nuestro equipo.",
+    "comments.1.role": "Director de Marketing",
+    "comments.1.text":
+      "La plataforma es intuitiva y los psicólogos son excepcionales. He notado una mejora notable en mi bienestar emocional desde que empecé a usar NeuroZen.",
+    "comments.2.role": "Desarrolladora de Software",
+    "comments.2.text":
+      "Las sesiones con los profesionales me han ayudado a gestionar mejor la ansiedad laboral. Las herramientas de seguimiento son muy útiles para ver mi progreso.",
+    "comments.3.role": "Contador",
+    "comments.3.text":
+      "Excelente servicio. Los ejercicios de respiración y meditación son perfectos para los momentos de estrés durante el trabajo. Lo recomiendo totalmente.",
+    "comments.4.role": "Diseñadora UX",
+    "comments.4.text":
+      "La agenda con profesionales es súper fácil de usar. He podido conectar rápidamente con psicólogos certificados que realmente entienden las necesidades del mundo laboral.",
+
+    "psychologists.0.description":
+      "Acompaña procesos terapéuticos centrados en el presente y la conciencia emocional. Ideal para quienes buscan reducir el estrés desde un enfoque integral.",
+    "psychologists.1.description":
+      "Especialista en terapia cognitivo-conductual con más de 10 años de experiencia. Ayuda a adultos a gestionar la ansiedad, depresión y conflictos personales.",
+    "psychologists.2.description":
+      "Psicólogo con enfoque humanista. Te acompaña en procesos de crecimiento personal, crisis emocionales, manejo del estrés y autoestima.",
+    "psychologists.3.description":
+      "Amplia experiencia trabajando con niños, adolescentes y familias. Ayuda a reducir el estrés escolar, mejorar la conducta y fortalecer los vínculos familiares.",
+    "psychologists.4.description":
+      "Psicóloga clínica con enfoque cognitivo-conductual. Te ayuda a identificar y transformar los pensamientos que generan estrés, promoviendo hábitos de autocuidado y bienestar emocional.",
 
     "psychologists.title": "Nuestro equipo de psicólogos",
     "psychologists.description":
@@ -242,6 +270,34 @@ export const ui = {
     "comments.title": "What our users say",
     "comments.description":
       "Discover how NeuroZen has transformed the lives of thousands of people",
+    "comments.previous": "Previous",
+    "comments.next": "Next",
+    "comments.0.role": "Human Resources Manager",
+    "comments.0.text":
+      "NeuroZen has completely transformed our organizational culture. The meditation exercises have significantly reduced stress in our team.",
+    "comments.1.role": "Marketing Director",
+    "comments.1.text":
+      "The platform is intuitive and the psychologists are exceptional. I have noticed a remarkable improvement in my emotional wellbeing since I started using NeuroZen.",
+    "comments.2.role": "Software Developer",
+    "comments.2.text":
+      "The sessions with the professionals have helped me manage work-related anxiety better. The tracking tools are very useful for seeing my progress.",
+    "comments.3.role": "Accountant",
+    "comments.3.text":
+      "Excellent service. The breathing and meditation exercises are perfect for stressful moments at work. I highly recommend it.",
+    "comments.4.role": "UX Designer",
+    "comments.4.text":
+      "Scheduling with professionals is incredibly easy. I have been able to quickly connect with certified psychologists who truly understand the needs of the working world.",
+
+    "psychologists.0.description":
+      "She supports therapeutic processes focused on the present and emotional awareness. Ideal for those looking to reduce stress through a holistic approach.",
+    "psychologists.1.description":
+      "Specialist in cognitive behavioral therapy with over 10 years of experience. Helps adults manage anxiety, depression and personal conflicts.",
+    "psychologists.2.description":
+      "Psychologist with a humanistic approach. Supports you through personal growth, emotional crises, stress management and self-esteem processes.",
+    "psychologists.3.description":
+      "Extensive experience working with children, adolescents and families. Helps reduce school stress, improve behavior and strengthen family bonds.",
+    "psychologists.4.description":
+      "Clinical psychologist with a cognitive behavioral approach. Helps you identify and transform stress-inducing thoughts while promoting self-care and emotional wellbeing.",
 
     "psychologists.title": "Our team of psychologists",
     "psychologists.description":
