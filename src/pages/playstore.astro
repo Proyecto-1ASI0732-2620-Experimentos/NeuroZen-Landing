@@ -1,0 +1,139 @@
+---
+import Footer from "src/components/FooterComponents/Footer.astro";
+import Header from "src/components/HeaderComponents/Header.astro";
+import Layout from "../layouts/Layout.astro";
+---
+
+<Layout>
+  <Header />
+  <main class="min-h-screen bg-gradient-to-br from-slate-900 via-slate-800 to-slate-900 py-12 px-4">
+    <div class="max-w-6xl mx-auto">
+      {/* Header */}
+      <div class="text-center mb-16">
+        <h1 class="text-5xl md:text-6xl font-bold text-white mb-4">
+          NeuroZen App
+        </h1>
+        <p class="text-xl text-gray-300">
+          Disponible en Google Play Store
+        </p>
+      </div>
+
+      {/* Play Store Card */}
+      <div class="grid md:grid-cols-2 gap-12 items-center">
+        {/* App Screenshot/Preview */}
+        <div class="flex justify-center">
+          <div class="bg-gradient-to-br from-green-400 to-emerald-600 rounded-3xl p-1 shadow-2xl transform hover:scale-105 transition-transform duration-300 max-w-sm">
+            <div class="bg-slate-900 rounded-3xl p-8 text-center">
+              <div class="mb-6">
+                <div class="w-24 h-24 bg-gradient-to-br from-green-400 to-emerald-600 rounded-full mx-auto flex items-center justify-center shadow-lg">
+                  <span class="text-4xl font-bold text-white">NZ</span>
+                </div>
+              </div>
+              <h2 class="text-2xl font-bold text-white mb-4">NeuroZen</h2>
+              <p class="text-gray-300 mb-6">
+                Transformando el bienestar laboral a través de la tecnología
+              </p>
+              <div class="space-y-3">
+                <div class="flex items-center justify-center gap-2 text-yellow-400">
+                  <span>★★★★★</span>
+                  <span class="text-gray-300">(4.8)</span>
+                </div>
+                <p class="text-sm text-gray-400">+50K descargas</p>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        {/* Store Info and Download */}
+        <div>
+          <div class="bg-gradient-to-br from-slate-800 to-slate-700 rounded-2xl p-8 shadow-xl border border-gray-700">
+            <div class="mb-8">
+              <h3 class="text-3xl font-bold text-white mb-4">
+                Descarga NeuroZen
+              </h3>
+              <p class="text-gray-300 mb-6">
+                Accede a todas las herramientas de bienestar mental desde tu dispositivo Android. 
+                Meditación guiada, ejercicios de respiración y conexión con profesionales certificados.
+              </p>
+            </div>
+
+            <div class="space-y-4 mb-8">
+              <div class="flex items-start gap-3">
+                <span class="text-green-400 text-2xl">✓</span>
+                <div>
+                  <h4 class="font-semibold text-white">Acceso Inmediato</h4>
+                  <p class="text-gray-400 text-sm">Comienza tu travesía de bienestar al instante</p>
+                </div>
+              </div>
+              <div class="flex items-start gap-3">
+                <span class="text-green-400 text-2xl">✓</span>
+                <div>
+                  <h4 class="font-semibold text-white">Versión Gratuita</h4>
+                  <p class="text-gray-400 text-sm">Prueba todas las funcionalidades básicas sin costo</p>
+                </div>
+              </div>
+              <div class="flex items-start gap-3">
+                <span class="text-green-400 text-2xl">✓</span>
+                <div>
+                  <h4 class="font-semibold text-white">Planes Premium</h4>
+                  <p class="text-gray-400 text-sm">Acceso a todas las funciones avanzadas y profesionales</p>
+                </div>
+              </div>
+            </div>
+
+            <div class="space-y-4">
+              <a 
+                href="https://play.google.com/store/apps/details?id=com.neurozen.app"
+                target="_blank"
+                rel="noopener noreferrer"
+                class="flex items-center justify-center gap-3 w-full bg-gradient-to-r from-green-500 to-emerald-600 hover:from-green-600 hover:to-emerald-700 text-white font-bold py-4 px-8 rounded-xl transition-all duration-300 hover:scale-105 shadow-lg"
+              >
+                <svg class="w-6 h-6" fill="currentColor" viewBox="0 0 24 24">
+                  <path d="M3.609 1.814L13.798 12 3.609 22.186a1.5 1.5 0 0 1-2.122 0L1.5 21.191V2.809l-.013-.995a1.5 1.5 0 0 1 2.122-1.5zm16.522 0l1.121 1.121v18.13l-1.121 1.121a1.5 1.5 0 1 1-2.122-2.122l.6-.6V4.536l-.6-.6a1.5 1.5 0 1 1 2.122-2.122z"/>
+                </svg>
+                Descargar en Google Play
+              </a>
+              <a 
+                href="/"
+                class="flex items-center justify-center gap-3 w-full bg-slate-700 hover:bg-slate-600 text-white font-bold py-4 px-8 rounded-xl transition-all duration-300 hover:scale-105 shadow-lg"
+              >
+                Volver al inicio
+              </a>
+            </div>
+          </div>
+
+          {/* Additional Info */}
+          <div class="mt-8 bg-slate-800/50 rounded-xl p-6 border border-gray-700">
+            <h4 class="font-semibold text-white mb-3">Información de la App</h4>
+            <div class="space-y-2 text-sm text-gray-300">
+              <p><span class="font-semibold">Versión:</span> 1.0.0</p>
+              <p><span class="font-semibold">Compatibilidad:</span> Android 8.0+</p>
+              <p><span class="font-semibold">Tamaño:</span> ~150 MB</p>
+              <p><span class="font-semibold">Desarrollador:</span> NeuroZen Team</p>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      {/* Features Section */}
+      <div class="mt-20 grid md:grid-cols-3 gap-6">
+        <div class="bg-slate-800 rounded-xl p-6 border border-gray-700 hover:border-green-500 transition-colors">
+          <div class="text-4xl mb-4">🧘</div>
+          <h3 class="text-xl font-bold text-white mb-2">Meditación Guiada</h3>
+          <p class="text-gray-400">Sesiones de meditación diseñadas para tu nivel de estrés</p>
+        </div>
+        <div class="bg-slate-800 rounded-xl p-6 border border-gray-700 hover:border-green-500 transition-colors">
+          <div class="text-4xl mb-4">💬</div>
+          <h3 class="text-xl font-bold text-white mb-2">Asesoramiento Experto</h3>
+          <p class="text-gray-400">Conecta con psicólogos certificados en línea</p>
+        </div>
+        <div class="bg-slate-800 rounded-xl p-6 border border-gray-700 hover:border-green-500 transition-colors">
+          <div class="text-4xl mb-4">📊</div>
+          <h3 class="text-xl font-bold text-white mb-2">Seguimiento Inteligente</h3>
+          <p class="text-gray-400">Monitorea tu progreso y mejora en tiempo real</p>
+        </div>
+      </div>
+    </div>
+  </main>
+  <Footer />
+</Layout>

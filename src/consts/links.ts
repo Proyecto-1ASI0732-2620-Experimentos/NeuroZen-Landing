@@ -1,1 +1,1 @@
-export const pendingActionUrl = "PON_AQUI_TU_LINK";
+export const pendingActionUrl = "https://neurozen-web-frontend.vercel.app";
