@@ -12,7 +12,7 @@ Landing page for NeuroZen - A platform transforming workplace wellness through t
 - 💳 **Purchase Flow**: Complete checkout experience with plan selection
 - 👨‍⚕️ **Psychologists Section**: Showcase of certified professionals
 - 💬 **Testimonials Carousel**: Interactive carousel with user reviews
-- 📊 **Pricing Plans**: Three tiers (Basic, Advanced, Professional)
+- 📊 **Pricing Plans**: Three tiers (Basic, Advanced, Professional) 
 
 ## 🚀 Project Structure
 
