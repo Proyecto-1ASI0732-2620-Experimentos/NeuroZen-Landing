@@ -33,7 +33,7 @@ Las rutas protegidas redirigen a `/login?redirect=…` y, tras iniciar sesión, 
 
 - Archivo: `public/downloads/NeuroZen.apk` → URL pública `/downloads/NeuroZen.apk`.
 - Datos mostrados (versión, requisitos) en `src/consts/app.ts`; tamaño y SHA-256 se calculan en el build.
-- `vercel.json` sirve el APK con `Content-Type: application/vnd.android.package-archive` y
+- `public/_headers` (Netlify) sirve el APK con `Content-Type: application/vnd.android.package-archive` y
   `Content-Disposition: attachment; filename="NeuroZen.apk"`.
 - Para publicar una nueva versión: reemplaza el APK y actualiza `version` en `src/consts/app.ts`.
 
@@ -59,7 +59,6 @@ Las rutas protegidas redirigen a `/login?redirect=…` y, tras iniciar sesión, 
 │   ├── pages/                   # index, descargar, compra (redirección), 404 + en/
 │   └── styles/global.css        # tokens de marca y estilos de botones
 ├── astro.config.mjs
-├── vercel.json
 └── package.json
 ```
 
@@ -85,10 +84,15 @@ Las rutas protegidas redirigen a `/login?redirect=…` y, tras iniciar sesión, 
 | `pnpm verify` | Verifica `dist/`: enlaces, anclas, idioma y validez del APK |
 | `node tests/e2e.cjs` | Pruebas E2E con Playwright + axe-core (ver cabecera del archivo) |
 
+## 🌐 Despliegue
+
+El sitio está publicado en **Netlify**: <https://neurozen-home.netlify.app/>. La configuración del
+despliegue (comando de build, carpeta `dist`, rama) se mantiene en el panel de Netlify; el proyecto no la modifica.
+
 ## 🔧 Configuración
 
 - **URL del sitio** (canonical, hreflang y Open Graph absolutos): define `SITE_URL`
-  (p. ej. `SITE_URL=https://tu-dominio.com`). En Vercel se usa automáticamente el dominio de producción.
+  (p. ej. `SITE_URL=https://tu-dominio.com`). En Netlify se usa automáticamente la URL del sitio (`https://neurozen-home.netlify.app`).
 - **Redes sociales**: añade los perfiles reales en `src/consts/social.ts` y aparecerán en el footer.
 - **Colores de marca**: `src/styles/global.css` (`--color-brand: #2D5A4A`, contraste 7.86:1 con blanco).
 

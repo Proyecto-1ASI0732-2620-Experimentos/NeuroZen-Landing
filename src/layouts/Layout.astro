@@ -22,7 +22,7 @@ const {
   noindex = false,
 } = Astro.props;
 
-// `site` solo se conoce si se define SITE_URL o en Vercel (ver astro.config.mjs).
+// `site` solo se conoce si se define SITE_URL o en Netlify (ver astro.config.mjs).
 const site = Astro.site;
 const abs = (path: string) => (site ? new URL(path, site).href : path);
 const canonical = abs(Astro.url.pathname);
