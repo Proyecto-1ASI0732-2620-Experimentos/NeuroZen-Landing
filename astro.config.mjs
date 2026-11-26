@@ -6,7 +6,7 @@ import tailwindcss from "@tailwindcss/vite";
 /**
  * URL pública de la landing (para canonical, hreflang y Open Graph absolutos).
  * Prioridad: SITE_URL → URL principal que Netlify expone en el build (`URL`,
- * p. ej. https://neurozen-home.netlify.app).
+ * p. ej. https://neurozen-landing.netlify.app).
  * Si no hay ninguna, esas etiquetas se omiten o usan rutas relativas.
  */
 const site =
