@@ -137,7 +137,7 @@ Las rutas de planes de pago, reservas y directorio exigen sesión. Sin sesión, 
 
 ### Requiere validación externa
 
-1. **Despliegue real en Netlify** (https://neurozen-home.netlify.app/). No pude desplegar desde este entorno. Tras publicar, conviene confirmar:
+1. **Despliegue real en Netlify** (https://neurozen-landing.netlify.app/). No pude desplegar desde este entorno. Tras publicar, conviene confirmar:
    - que `/downloads/NeuroZen.apk` responde 200 y descarga el archivo de 27,8 MB;
    - que las cabeceras de `public/_headers` (`Content-Type` y `Content-Disposition`) se aplican.
 2. **Instalación en un dispositivo Android físico.** Se probó la descarga, pero no la instalación del APK en un teléfono real.

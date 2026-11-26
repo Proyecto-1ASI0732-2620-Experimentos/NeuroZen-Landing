@@ -86,13 +86,13 @@ Las rutas protegidas redirigen a `/login?redirect=…` y, tras iniciar sesión, 
 
 ## 🌐 Despliegue
 
-El sitio está publicado en **Netlify**: <https://neurozen-home.netlify.app/>. La configuración del
+El sitio está publicado en **Netlify**: <https://neurozen-landing.netlify.app/>. La configuración del
 despliegue (comando de build, carpeta `dist`, rama) se mantiene en el panel de Netlify; el proyecto no la modifica.
 
 ## 🔧 Configuración
 
 - **URL del sitio** (canonical, hreflang y Open Graph absolutos): define `SITE_URL`
-  (p. ej. `SITE_URL=https://tu-dominio.com`). En Netlify se usa automáticamente la URL del sitio (`https://neurozen-home.netlify.app`).
+  (p. ej. `SITE_URL=https://tu-dominio.com`). En Netlify se usa automáticamente la URL del sitio (`https://neurozen-landing.netlify.app`).
 - **Redes sociales**: añade los perfiles reales en `src/consts/social.ts` y aparecerán en el footer.
 - **Colores de marca**: `src/styles/global.css` (`--color-brand: #2D5A4A`, contraste 7.86:1 con blanco).
 
