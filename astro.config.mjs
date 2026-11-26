@@ -5,14 +5,12 @@ import tailwindcss from "@tailwindcss/vite";
 
 /**
  * URL pública de la landing (para canonical, hreflang y Open Graph absolutos).
- * Prioridad: SITE_URL → dominio de producción que Vercel expone en el build.
+ * Prioridad: SITE_URL → URL principal que Netlify expone en el build (`URL`,
+ * p. ej. https://neurozen-home.netlify.app).
  * Si no hay ninguna, esas etiquetas se omiten o usan rutas relativas.
  */
 const site =
-  process.env.SITE_URL ||
-  (process.env.VERCEL_PROJECT_PRODUCTION_URL
-    ? `https://${process.env.VERCEL_PROJECT_PRODUCTION_URL}`
-    : undefined);
+  process.env.SITE_URL || (process.env.NETLIFY ? process.env.URL : undefined);
 
 // https://astro.build/config
 export default defineConfig({

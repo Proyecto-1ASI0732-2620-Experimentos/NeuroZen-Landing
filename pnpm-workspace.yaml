@@ -1,3 +1,8 @@
+# Proyecto de un solo paquete. "packages" es obligatorio para pnpm 9
+# (sin él falla con "packages field missing or empty").
+packages:
+  - "."
+
 allowBuilds:
   '@tailwindcss/oxide': true
   esbuild: true
