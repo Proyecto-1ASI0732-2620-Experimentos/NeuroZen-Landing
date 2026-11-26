@@ -1,123 +1,188 @@
 ---
-import CloseIcon from "@/assets/Icons/close.svg";
 import menuItems from "@/consts/menu-item";
-import { pendingActionUrl } from "@/consts/links";
-import { getLangFromUrl, useTranslations } from "@/i18n/utils";
+import { webAppLinks } from "@/consts/links";
+import {
+  getHomeAnchor,
+  getLangFromUrl,
+  getLocalizedPath,
+  useTranslations,
+} from "@/i18n/utils";
 
+interface Props {
+  isHome?: boolean;
+}
+
+const { isHome = false } = Astro.props;
 const lang = getLangFromUrl(Astro.url);
 const t = useTranslations(lang);
+const anchor = (hash: string) => (isHome ? hash : getHomeAnchor(lang, hash));
 ---
 
 <!-- Overlay -->
 <div
   id="mobile-menu-overlay"
-  class="fixed inset-0 bg-black/50 backdrop-blur-sm z-40 opacity-0 pointer-events-none transition-opacity duration-300"
+  class="fixed inset-0 bg-black/50 backdrop-blur-sm z-[60] opacity-0 pointer-events-none transition-opacity duration-300"
+  aria-hidden="true"
 >
 </div>
 
-<!-- Menu Panel -->
-<nav
+<!-- Panel del menú (inerte y oculto a lectores de pantalla mientras está cerrado) -->
+<div
   id="mobile-menu"
-  class="fixed top-0 right-0 h-full w-[280px] bg-gradient-to-b from-[#033612] to-[#0a5c20] z-50 transform translate-x-full transition-transform duration-300 ease-in-out shadow-2xl"
+  role="dialog"
+  aria-modal="true"
+  aria-labelledby="mobile-menu-title"
+  inert
+  class="on-dark fixed top-0 right-0 h-full w-[300px] max-w-[88vw] bg-gradient-to-b from-[#033612] to-[#0a5c20] z-[70] translate-x-full invisible transition-transform duration-300 ease-in-out shadow-2xl flex flex-col overflow-y-auto"
 >
-  <!-- Header del menu -->
   <div class="flex items-center justify-between p-5 border-b border-white/20">
-    <h3 class="text-white text-xl font-bold">{t("nav.menu")}</h3>
+    <p id="mobile-menu-title" class="text-white text-xl font-bold">
+      {t("nav.menu")}
+    </p>
     <button
       id="close-menu"
-      class="p-2 hover:bg-white/10 rounded-lg transition-colors duration-200"
-      aria-label="Cerrar menú"
+      type="button"
+      class="inline-flex items-center justify-center size-11 rounded-lg text-white hover:bg-white/10 transition-colors duration-200"
+      aria-label={t("nav.closeMenu")}
     >
-      <img src={CloseIcon.src} alt="Cerrar" class="w-6 h-6 invert" />
+      <svg
+        xmlns="http://www.w3.org/2000/svg"
+        class="size-6"
+        fill="none"
+        viewBox="0 0 24 24"
+        stroke="currentColor"
+        stroke-width="2"
+        aria-hidden="true"
+      >
+        <path stroke-linecap="round" d="M6 18L18 6M6 6l12 12"></path>
+      </svg>
     </button>
   </div>
 
-  <!-- Menu Items -->
-  <ul class="flex flex-col p-5 gap-2">
-    {
-      menuItems.map((item) => (
-        <li>
-          <a
-            href={item.href}
-            class="menu-item block px-4 py-3 text-white text-lg hover:bg-white/10 rounded-lg transition-all duration-200 hover:translate-x-2"
-          >
-            {t(item.name as any)}
-          </a>
-        </li>
-      ))
-    }
-  </ul>
-
-  <div class="absolute bottom-5 left-5 right-5">
-    <a
-      href={pendingActionUrl}
-      target="_blank"
-      class="block w-full text-center px-4 py-3 bg-green-gradient-start hover:bg-[#76ca50] text-white font-semibold rounded-lg transition-all duration-200 hover:scale-105"
-    >
-      {t("hero.cta.button")}
+  <!-- Accesos de autenticación -->
+  <div class="flex flex-col gap-3 p-5 border-b border-white/20">
+    <a href={webAppLinks.register} class="btn btn-light w-full">
+      {t("nav.register")}
+    </a>
+    <a href={webAppLinks.login} class="btn btn-ghost-light w-full">
+      {t("nav.login")}
     </a>
   </div>
-</nav>
+
+  <nav aria-label={t("nav.main")}>
+    <ul class="flex flex-col p-5 gap-1">
+      {
+        menuItems.map((item) => (
+          <li>
+            <a
+              href={anchor(item.href)}
+              class="mobile-menu-link block px-4 py-3 text-white text-lg hover:bg-white/10 rounded-lg transition-colors duration-200"
+            >
+              {t(item.name as any)}
+            </a>
+          </li>
+        ))
+      }
+    </ul>
+  </nav>
+
+  <div class="mt-auto p-5 border-t border-white/20">
+    <a
+      href={getLocalizedPath(lang, "descargar")}
+      class="mobile-menu-link flex items-center gap-3 px-4 py-3 text-white rounded-lg border border-white/30 hover:bg-white/10 transition-colors duration-200"
+    >
+      <svg
+        xmlns="http://www.w3.org/2000/svg"
+        class="size-6 shrink-0"
+        fill="none"
+        viewBox="0 0 24 24"
+        stroke="currentColor"
+        stroke-width="2"
+        aria-hidden="true"
+      >
+        <path
+          stroke-linecap="round"
+          stroke-linejoin="round"
+          d="M12 4v11m0 0l-4-4m4 4l4-4M5 20h14"></path>
+      </svg>
+      <span class="font-semibold">{t("nav.download")}</span>
+    </a>
+  </div>
+</div>
 
 <script>
   const mobileMenu = document.getElementById("mobile-menu");
   const overlay = document.getElementById("mobile-menu-overlay");
-  const closeMenuBtn = document.getElementById("close-menu");
-  const menuItems = document.querySelectorAll(".menu-item");
+  const openBtn = document.getElementById("hamburger-btn");
+  const closeBtn = document.getElementById("close-menu");
+  let isOpen = false;
 
-  // Función para abrir el menú
+  const focusable = () =>
+    Array.from(
+      mobileMenu?.querySelectorAll<HTMLElement>("a[href], button") ?? [],
+    );
+
   const openMenu = () => {
-    mobileMenu?.classList.remove("translate-x-full");
+    if (!mobileMenu) return;
+    isOpen = true;
+    mobileMenu.removeAttribute("inert");
+    // Se hace visible al instante (para poder enfocar) y luego se desliza.
+    mobileMenu.classList.remove("invisible");
+    void mobileMenu.offsetWidth;
+    mobileMenu.classList.remove("translate-x-full");
     overlay?.classList.remove("opacity-0", "pointer-events-none");
-    document.body.style.overflow = "hidden"; // Prevenir scroll del body
+    openBtn?.setAttribute("aria-expanded", "true");
+    document.body.style.overflow = "hidden";
+    closeBtn?.focus();
   };
 
-  // Función para cerrar el menú
-  const closeMenu = () => {
-    mobileMenu?.classList.add("translate-x-full");
+  const closeMenu = (restoreFocus = true) => {
+    if (!mobileMenu || !isOpen) return;
+    isOpen = false;
+    mobileMenu.setAttribute("inert", "");
+    mobileMenu.classList.add("translate-x-full");
+    // Se oculta por completo al terminar la animación de salida.
+    window.setTimeout(() => {
+      if (!isOpen) mobileMenu.classList.add("invisible");
+    }, 300);
     overlay?.classList.add("opacity-0", "pointer-events-none");
-    document.body.style.overflow = ""; // Restaurar scroll
+    openBtn?.setAttribute("aria-expanded", "false");
+    document.body.style.overflow = "";
+    if (restoreFocus) openBtn?.focus();
   };
 
-  // Event listeners
-  closeMenuBtn?.addEventListener("click", closeMenu);
-  overlay?.addEventListener("click", closeMenu);
+  openBtn?.addEventListener("click", openMenu);
+  closeBtn?.addEventListener("click", () => closeMenu());
+  overlay?.addEventListener("click", () => closeMenu());
 
-  // Cerrar menú al hacer click en cualquier item
-  menuItems.forEach((item) => {
-    item.addEventListener("click", closeMenu);
+  // Al elegir un enlace se cierra el menú (sin robar el foco al destino).
+  mobileMenu?.querySelectorAll("a").forEach((link) => {
+    link.addEventListener("click", () => closeMenu(false));
   });
 
-  // Cerrar con tecla Escape
   document.addEventListener("keydown", (e) => {
+    if (!isOpen) return;
     if (e.key === "Escape") {
       closeMenu();
+      return;
+    }
+    // Mantiene el foco dentro del menú mientras está abierto.
+    if (e.key === "Tab") {
+      const items = focusable();
+      const first = items[0];
+      const last = items[items.length - 1];
+      if (e.shiftKey && document.activeElement === first) {
+        e.preventDefault();
+        last?.focus();
+      } else if (!e.shiftKey && document.activeElement === last) {
+        e.preventDefault();
+        first?.focus();
+      }
     }
   });
 
-  // Exponer la función openMenu globalmente para que el botón hamburguesa pueda usarla
-  (window as any).openMobileMenu = openMenu;
+  // Si la ventana crece hasta el layout de escritorio, cierra el menú.
+  window.matchMedia("(min-width: 80rem)").addEventListener("change", (e) => {
+    if (e.matches) closeMenu(false);
+  });
 </script>
-
-<style>
-  /* Animación suave para los items del menu */
-  .menu-item {
-    position: relative;
-  }
-
-  .menu-item::before {
-    content: "";
-    position: absolute;
-    left: 0;
-    top: 50%;
-    transform: translateY(-50%);
-    width: 3px;
-    height: 0;
-    background: #76ca50;
-    transition: height 0.2s ease;
-  }
-
-  .menu-item:hover::before {
-    height: 70%;
-  }
-</style>

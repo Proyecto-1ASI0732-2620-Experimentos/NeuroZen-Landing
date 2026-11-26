@@ -1,7 +1,9 @@
 ---
 import PriceCard from "../components/PriceCard.astro";
 import Section from "../components/Section.astro";
+import Link from "../ui/Link.astro";
 import { getLangFromUrl, useTranslations } from "@/i18n/utils";
+import { webAppLinks } from "@/consts/links";
 
 const lang = getLangFromUrl(Astro.url);
 const t = useTranslations(lang);
@@ -38,18 +40,25 @@ const professionalFeatures = [
 ---
 
 <Section id="planes" title={t("plans.title")} description={t("plans.subtitle")}>
-  <div class="flex flex-col gap-8 md:flex-row">
+  <div class="flex flex-col gap-8 md:flex-row md:items-stretch w-full max-w-6xl">
+    <!-- Plan gratuito: registro directo en la Web App -->
     <PriceCard
       name={t("plans.basic.name")}
       price={t("plans.basic.price")}
       subtitle={t("plans.basic.subtitle")}
       features={basicFeatures}
+      href={webAppLinks.register}
+      ctaText={t("plans.chooseFree")}
     />
+    <!-- Planes de pago: compra real en la Web App (requiere sesión) -->
     <PriceCard
       name={t("plans.advanced.name")}
       price={t("plans.advanced.price")}
       subtitle={t("plans.advanced.subtitle")}
       features={advancedFeatures}
+      href={webAppLinks.purchase("advanced")}
+      ctaText={t("plans.choose")}
+      monthly
       isAdvanced
     />
     <PriceCard
@@ -57,6 +66,13 @@ const professionalFeatures = [
       price={t("plans.professional.price")}
       subtitle={t("plans.professional.subtitle")}
       features={professionalFeatures}
+      href={webAppLinks.purchase("professional")}
+      ctaText={t("plans.choose")}
+      monthly
     />
+  </div>
+  <div class="flex flex-col items-center gap-3 max-w-2xl">
+    <p class="text-sm text-gray-600">{t("plans.note")}</p>
+    <Link href={webAppLinks.plans} text={t("plans.viewAll")} variant="outline" />
   </div>
 </Section>

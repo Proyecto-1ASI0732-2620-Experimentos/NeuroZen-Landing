@@ -1,0 +1,15 @@
+---
+import Layout from "@/layouts/Layout.astro";
+import Header from "@/components/HeaderComponents/Header.astro";
+import Footer from "@/components/FooterComponents/Footer.astro";
+import AppDownload from "@/components/DownloadComponents/AppDownload.astro";
+import { getLangFromUrl, useTranslations } from "@/i18n/utils";
+
+const t = useTranslations(getLangFromUrl(Astro.url));
+---
+
+<Layout title={t("download.meta.title")} description={t("download.meta.description")}>
+  <Header />
+  <AppDownload />
+  <Footer />
+</Layout>

@@ -1,21 +1,39 @@
 ---
-interface Props {
-  styles?: string;
-  text: string;
+import type { HTMLAttributes } from "astro/types";
+import { getLangFromUrl, useTranslations } from "@/i18n/utils";
+
+type Variant = "primary" | "outline" | "light" | "ghost-light";
+
+interface Props extends Omit<HTMLAttributes<"a">, "class"> {
   href: string;
+  text?: string;
+  styles?: string;
+  variant?: Variant;
+  /** Abre el enlace en una pestaña nueva (añade rel y aviso accesible). */
+  newTab?: boolean;
 }
 
-const { styles, text, href } = Astro.props;
+const {
+  href,
+  text,
+  styles = "",
+  variant = "primary",
+  newTab = false,
+  ...rest
+} = Astro.props;
 
-const isExternal = href.startsWith("http://") || href.startsWith("https://");
-const anchorTarget = isExternal ? "_blank" : undefined;
+const t = useTranslations(getLangFromUrl(Astro.url));
 ---
 
 <a
   href={href}
-  target={anchorTarget}
-  class=`rounded-lg bg-gradient-to-r from-green-500 to-emerald-600
-      text-white font-semibold hover:from-green-60 hover:to-emerald-700 transition-all duration-300 shadow-md hover:shadow-lg hover:scale-105 cursor-pointer ${styles}`
+  target={newTab ? "_blank" : undefined}
+  rel={newTab ? "noopener noreferrer" : undefined}
+  class:list={["btn", `btn-${variant}`, styles]}
+  {...rest}
 >
+  <slot name="icon" />
   {text}
+  <slot />
+  {newTab && <span class="sr-only">{t("a11y.newTab")}</span>}
 </a>

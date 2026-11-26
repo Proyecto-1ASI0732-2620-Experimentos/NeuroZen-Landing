@@ -15,7 +15,7 @@ const t = useTranslations(lang);
 >
   <div class="carousel-container relative max-w-7xl mx-auto px-4 w-full">
     <!-- Carrusel -->
-    <div class="carousel-wrapper overflow-hidden">
+    <div class="carousel-wrapper overflow-hidden py-4 -my-4">
       <div
         id="carousel"
         class="carousel-track flex gap-6 transition-transform duration-500 ease-in-out"
@@ -23,7 +23,7 @@ const t = useTranslations(lang);
         {
           comments.map((comment, index) => (
             <div class="carousel-item flex-shrink-0 w-full md:w-[calc(50%-12px)] lg:w-[calc(33.333%-16px)]">
-              <Comment comment={{
+              <Comment ratingLabel={t("comments.rating").replace("{n}", String(comment.rating))} comment={{
                 ...comment,
                 role: t(`comments.${index}.role` as any),
                 comment: t(`comments.${index}.text` as any),
@@ -38,10 +38,11 @@ const t = useTranslations(lang);
     <div class="flex justify-center items-center gap-4 mt-8">
       <button
         id="prev-btn"
-        class="nav-btn bg-white hover:bg-green-50 text-green-600 rounded-full p-3 shadow-lg hover:shadow-xl transition-all duration-300 hover:scale-110 disabled:opacity-50 disabled:cursor-not-allowed"
+        class="nav-btn inline-flex items-center justify-center size-12 bg-white hover:bg-brand-soft text-brand rounded-full shadow-lg hover:shadow-xl transition-all duration-300 disabled:opacity-50 disabled:cursor-not-allowed"
         aria-label={t("comments.previous")}
       >
         <svg
+          aria-hidden="true"
           xmlns="http://www.w3.org/2000/svg"
           class="w-6 h-6"
           fill="none"
@@ -57,16 +58,17 @@ const t = useTranslations(lang);
       </button>
 
       <!-- Indicadores -->
-      <div id="indicators" class="flex gap-2">
+      <div id="indicators" class="flex gap-2" data-label={t("comments.goTo")}>
         <!-- Los indicadores se generarán dinámicamente con JavaScript -->
       </div>
 
       <button
         id="next-btn"
-        class="nav-btn bg-white hover:bg-green-50 text-green-600 rounded-full p-3 shadow-lg hover:shadow-xl transition-all duration-300 hover:scale-110 disabled:opacity-50 disabled:cursor-not-allowed"
+        class="nav-btn inline-flex items-center justify-center size-12 bg-white hover:bg-brand-soft text-brand rounded-full shadow-lg hover:shadow-xl transition-all duration-300 disabled:opacity-50 disabled:cursor-not-allowed"
         aria-label={t("comments.next")}
       >
         <svg
+          aria-hidden="true"
           xmlns="http://www.w3.org/2000/svg"
           class="w-6 h-6"
           fill="none"
@@ -90,6 +92,8 @@ const t = useTranslations(lang);
   }
 
   .indicator {
+    border: 0;
+    padding: 0;
     width: 12px;
     height: 12px;
     border-radius: 50%;
@@ -104,7 +108,7 @@ const t = useTranslations(lang);
   }
 
   .indicator.active {
-    background-color: #44b44d;
+    background-color: var(--color-brand);
     width: 32px;
     border-radius: 6px;
   }
@@ -116,9 +120,7 @@ const t = useTranslations(lang);
   const nextBtn = document.getElementById("next-btn") as HTMLButtonElement;
   const indicatorsContainer = document.getElementById("indicators");
 
-  if (!carousel || !prevBtn || !nextBtn || !indicatorsContainer) {
-    throw new Error("Carousel elements not found");
-  }
+  const goToLabel = indicatorsContainer?.dataset.label ?? "";
 
   let currentIndex = 0;
   let itemsPerView = 1;
@@ -145,8 +147,10 @@ const t = useTranslations(lang);
     // Crear indicadores
     indicatorsContainer.innerHTML = "";
     for (let i = 0; i < totalPages; i++) {
-      const indicator = document.createElement("div");
+      const indicator = document.createElement("button");
+      indicator.type = "button";
       indicator.classList.add("indicator");
+      indicator.setAttribute("aria-label", `${goToLabel} ${i + 1}`);
       if (i === 0) indicator.classList.add("active");
       indicator.addEventListener("click", () => goToPage(i));
       indicatorsContainer.appendChild(indicator);
@@ -171,7 +175,18 @@ const t = useTranslations(lang);
     // Actualizar indicadores
     const indicators = indicatorsContainer.querySelectorAll(".indicator");
     indicators.forEach((indicator, index) => {
-      indicator.classList.toggle("active", index === currentIndex);
+      const active = index === currentIndex;
+      indicator.classList.toggle("active", active);
+      if (active) indicator.setAttribute("aria-current", "true");
+      else indicator.removeAttribute("aria-current");
+    });
+
+    // Solo las tarjetas visibles quedan expuestas a lectores de pantalla
+    items.forEach((item, index) => {
+      const start = currentIndex * itemsPerView;
+      const visible = index >= start && index < start + itemsPerView;
+      item.toggleAttribute("inert", !visible);
+      item.setAttribute("aria-hidden", visible ? "false" : "true");
     });
 
     // Actualizar estado de los botones
@@ -220,7 +235,14 @@ const t = useTranslations(lang);
 
   // Pausar autoplay al interactuar
   carousel?.addEventListener("mouseenter", stopAutoplay);
-  carousel?.addEventListener("mouseleave", startAutoplay);
+  carousel?.addEventListener("mouseleave", () => {
+    if (!reduceMotion) {
+      stopAutoplay();
+      startAutoplay();
+    }
+  });
+  // Pausa el autoplay si el foco del teclado entra en el carrusel
+  carousel?.addEventListener("focusin", stopAutoplay);
   prevBtn?.addEventListener("click", stopAutoplay);
   nextBtn?.addEventListener("click", stopAutoplay);
 
@@ -262,7 +284,10 @@ const t = useTranslations(lang);
     }, 250);
   });
 
-  // Inicializar
-  initCarousel();
-  startAutoplay();
+  // Inicializar (solo si existen los elementos del carrusel)
+  const reduceMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+  if (carousel && prevBtn && nextBtn && indicatorsContainer) {
+    initCarousel();
+    if (!reduceMotion) startAutoplay();
+  }
 </script>
