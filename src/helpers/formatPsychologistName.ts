@@ -1,4 +1,4 @@
-import type { Psychologist } from "@/types/Psychologist";
+import type { Psychologist } from "@/types/psychologist";
 
 /**
  * Formats a psychologist's name by prepending their title if available.

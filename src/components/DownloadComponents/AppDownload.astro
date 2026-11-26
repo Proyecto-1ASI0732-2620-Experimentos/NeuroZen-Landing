@@ -1,0 +1,371 @@
+---
+/**
+ * Ficha de descarga de la app Android de NeuroZen.
+ * Inspirada en la presentación de una tienda de apps, pero sin usar marcas
+ * de terceros ni datos inventados (valoraciones, nº de descargas…).
+ * El botón descarga el APK real alojado en /public/downloads/.
+ */
+import { Image } from "astro:assets";
+import { createHash } from "node:crypto";
+import { readFileSync, statSync } from "node:fs";
+import { join } from "node:path";
+
+import Logo from "@/assets/images/Principales/Logo.png";
+import S1 from "@/assets/images/AppScreens/1.jpeg";
+import S2 from "@/assets/images/AppScreens/2.jpeg";
+import S3 from "@/assets/images/AppScreens/3.jpeg";
+import S4 from "@/assets/images/AppScreens/4.jpeg";
+import S5 from "@/assets/images/AppScreens/5.jpeg";
+import S6 from "@/assets/images/AppScreens/6.jpeg";
+import S7 from "@/assets/images/AppScreens/7.jpeg";
+import S8 from "@/assets/images/AppScreens/8.jpeg";
+import S9 from "@/assets/images/AppScreens/9.jpeg";
+import S10 from "@/assets/images/AppScreens/10.jpeg";
+import S11 from "@/assets/images/AppScreens/11.jpeg";
+
+import Link from "@/components/MainComponents/ui/Link.astro";
+import { androidApp } from "@/consts/app";
+import { webAppLinks } from "@/consts/links";
+import { getLangFromUrl, getLocalizedPath, useTranslations } from "@/i18n/utils";
+
+const lang = getLangFromUrl(Astro.url);
+const t = useTranslations(lang);
+
+// Tamaño y huella SHA-256 calculados del archivo real durante el build.
+let sizeLabel: string | null = null;
+let sha256: string | null = null;
+try {
+  const file = join(process.cwd(), androidApp.projectFile);
+  const bytes = statSync(file).size;
+  sizeLabel = `${new Intl.NumberFormat(lang === "es" ? "es-ES" : "en-US", {
+    maximumFractionDigits: 1,
+  }).format(bytes / (1024 * 1024))} MB`;
+  sha256 = createHash("sha256").update(readFileSync(file)).digest("hex");
+} catch {
+  console.warn(`[download] No se encontró ${androidApp.projectFile}`);
+}
+
+// Orden de presentación de las capturas (archivo → texto alternativo).
+const screens = [
+  { src: S1, alt: t("download.screen.1") },
+  { src: S3, alt: t("download.screen.2") },
+  { src: S7, alt: t("download.screen.3") },
+  { src: S9, alt: t("download.screen.4") },
+  { src: S4, alt: t("download.screen.5") },
+  { src: S6, alt: t("download.screen.6") },
+  { src: S8, alt: t("download.screen.7") },
+  { src: S10, alt: t("download.screen.8") },
+  { src: S11, alt: t("download.screen.9") },
+  { src: S5, alt: t("download.screen.10") },
+  { src: S2, alt: t("download.screen.11") },
+];
+
+const tags = [
+  t("download.tag.1"),
+  t("download.tag.2"),
+  t("download.tag.3"),
+  t("download.tag.4"),
+];
+
+const info = [
+  { label: t("download.platform"), value: t("download.platformValue") },
+  { label: t("download.version"), value: androidApp.version },
+  ...(sizeLabel ? [{ label: t("download.size"), value: sizeLabel }] : []),
+  { label: t("download.requires"), value: t("download.requiresValue") },
+  { label: t("download.developer"), value: androidApp.developer },
+  { label: t("download.file"), value: androidApp.fileName },
+];
+
+const steps = [
+  t("download.steps.1"),
+  t("download.steps.2"),
+  t("download.steps.3"),
+  t("download.steps.4"),
+];
+---
+
+<main id="contenido" tabindex="-1" class="flex-1 bg-[#F4FAF6] pt-24 md:pt-28 pb-16 outline-none">
+  <div class="mx-auto w-full max-w-5xl px-4 sm:px-6">
+    <a
+      href={getLocalizedPath(lang)}
+      class="inline-flex items-center gap-2 min-h-11 px-2 -ml-2 rounded-lg text-brand font-semibold hover:underline underline-offset-4"
+    >
+      <svg xmlns="http://www.w3.org/2000/svg" class="size-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2" aria-hidden="true">
+        <path stroke-linecap="round" stroke-linejoin="round" d="M10 19l-7-7m0 0l7-7m-7 7h18"></path>
+      </svg>
+      {t("download.back")}
+    </a>
+
+    <!-- Ficha principal -->
+    <article class="mt-4 rounded-3xl bg-white shadow-xl border border-gray-100 overflow-hidden">
+      <div class="p-5 sm:p-8">
+        <header class="flex items-start gap-4 sm:gap-6">
+          <div class="shrink-0 rounded-[22%] bg-[#FBF1E3] p-2 shadow-md border border-gray-100">
+            <Image
+              src={Logo}
+              alt={t("meta.logoAlt")}
+              width={192}
+              height={192}
+              loading="eager"
+              class="size-20 sm:size-28 rounded-[18%]"
+            />
+          </div>
+          <div class="min-w-0 flex-1">
+            <h1 class="text-3xl sm:text-4xl font-bold text-gray-900">{androidApp.name}</h1>
+            <p class="mt-1 font-semibold text-brand">{androidApp.developer}</p>
+            <p class="mt-1 text-sm text-gray-600">{t("download.category")}</p>
+            <p class="mt-3 inline-flex items-center gap-1.5 rounded-full bg-brand-soft px-3 py-1 text-xs font-semibold text-brand">
+              <svg xmlns="http://www.w3.org/2000/svg" class="size-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2" aria-hidden="true">
+                <path stroke-linecap="round" stroke-linejoin="round" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z" />
+              </svg>
+              {t("download.badge")}
+            </p>
+          </div>
+        </header>
+
+        <p class="mt-5 text-gray-700 text-lg">{t("download.tagline")}</p>
+
+        <!-- Datos rápidos (solo datos reales del APK) -->
+        <dl class="mt-6 grid grid-cols-3 divide-x divide-gray-200 rounded-2xl border border-gray-200 text-center">
+          <div class="px-2 py-3">
+            <dt class="text-xs text-gray-600">{t("download.version")}</dt>
+            <dd class="mt-1 font-bold text-gray-900">{androidApp.version}</dd>
+          </div>
+          <div class="px-2 py-3">
+            <dt class="text-xs text-gray-600">{t("download.size")}</dt>
+            <dd class="mt-1 font-bold text-gray-900">{sizeLabel ?? "—"}</dd>
+          </div>
+          <div class="px-2 py-3">
+            <dt class="text-xs text-gray-600">{t("download.platform")}</dt>
+            <dd class="mt-1 font-bold text-gray-900">Android {androidApp.minAndroid}+</dd>
+          </div>
+        </dl>
+
+        <!-- Descarga -->
+        <div class="mt-6 flex flex-col gap-3">
+          <a
+            id="apk-download"
+            href={androidApp.downloadPath}
+            download={androidApp.fileName}
+            type="application/vnd.android.package-archive"
+            class="btn btn-primary w-full text-lg py-4"
+            data-checking={t("download.checking")}
+            data-started={t("download.started")}
+            data-error={t("download.error")}
+            aria-describedby="apk-source apk-warning"
+          >
+            <svg xmlns="http://www.w3.org/2000/svg" class="size-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2" aria-hidden="true">
+              <path stroke-linecap="round" stroke-linejoin="round" d="M12 4v11m0 0l-4-4m4 4l4-4M5 20h14"></path>
+            </svg>
+            <span>{t("download.button")}</span>
+            {sizeLabel && <span class="font-normal opacity-90">({sizeLabel})</span>}
+          </a>
+
+          <p
+            id="apk-status"
+            role="status"
+            aria-live="polite"
+            class="hidden rounded-xl px-4 py-3 text-sm font-medium"
+          >
+          </p>
+
+          <p id="apk-source" class="flex items-start gap-2 text-sm text-gray-700">
+            <svg xmlns="http://www.w3.org/2000/svg" class="size-5 shrink-0 text-brand" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2" aria-hidden="true">
+              <path stroke-linecap="round" stroke-linejoin="round" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"></path>
+            </svg>
+            {t("download.source")}
+          </p>
+
+          <p id="apk-desktop" class="hidden rounded-xl bg-sky-50 border border-sky-200 px-4 py-3 text-sm text-sky-900">
+            {t("download.desktop")}
+          </p>
+        </div>
+
+        <!-- Advertencia obligatoria -->
+        <div
+          id="apk-warning"
+          class="mt-6 flex gap-3 rounded-2xl border border-amber-300 bg-amber-50 p-4 text-amber-950"
+        >
+          <svg xmlns="http://www.w3.org/2000/svg" class="size-6 shrink-0 text-amber-700" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2" aria-hidden="true">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M12 9v3.75m0 3.75h.008M10.29 3.86L1.82 18a2 2 0 001.71 3h16.94a2 2 0 001.71-3L13.71 3.86a2 2 0 00-3.42 0z"></path>
+          </svg>
+          <div>
+            <p class="font-bold">{t("download.warning.title")}</p>
+            <p class="mt-1 text-sm leading-relaxed">{t("download.warning")}</p>
+          </div>
+        </div>
+      </div>
+
+      <!-- Capturas -->
+      <section aria-labelledby="screens-title" class="border-t border-gray-100 py-6 sm:py-8">
+        <div class="flex items-baseline justify-between gap-3 px-5 sm:px-8">
+          <h2 id="screens-title" class="text-xl sm:text-2xl text-gray-900">{t("download.screens")}</h2>
+          <p class="text-xs text-gray-600">{t("download.screensHint")}</p>
+        </div>
+        <ul
+          class="screens mt-4 flex gap-3 overflow-x-auto snap-x snap-mandatory scroll-px-5 sm:scroll-px-8 px-5 sm:px-8 pb-3"
+          tabindex="0"
+          aria-label={t("download.screens")}
+        >
+          {
+            screens.map((s, i) => (
+              <li class="snap-start shrink-0">
+                <Image
+                  src={s.src}
+                  alt={s.alt}
+                  width={240}
+                  densities={[1, 2]}
+                  loading={i < 3 ? "eager" : "lazy"}
+                  class="h-[360px] sm:h-[420px] w-auto aspect-[1/2] object-cover rounded-2xl border border-gray-200 shadow-sm bg-gray-100"
+                />
+              </li>
+            ))
+          }
+        </ul>
+      </section>
+
+      <!-- Acerca de -->
+      <section aria-labelledby="about-app-title" class="border-t border-gray-100 p-5 sm:p-8">
+        <h2 id="about-app-title" class="text-xl sm:text-2xl text-gray-900">{t("download.about")}</h2>
+        <p class="mt-3 text-gray-700 leading-relaxed">{t("download.about.text")}</p>
+        <ul class="mt-4 flex flex-wrap gap-2">
+          {tags.map((tag) => (
+            <li class="rounded-full border border-gray-300 px-3 py-1.5 text-sm text-gray-800">{tag}</li>
+          ))}
+        </ul>
+      </section>
+
+      <!-- Información + instalación -->
+      <div class="grid gap-0 md:grid-cols-2 border-t border-gray-100">
+        <section aria-labelledby="install-title" class="p-5 sm:p-8">
+          <h2 id="install-title" class="text-xl sm:text-2xl text-gray-900">{t("download.steps.title")}</h2>
+          <ol class="mt-4 space-y-3">
+            {steps.map((step, i) => (
+              <li class="flex gap-3">
+                <span aria-hidden="true" class="inline-flex size-7 shrink-0 items-center justify-center rounded-full bg-brand text-sm font-bold text-white">{i + 1}</span>
+                <span class="text-gray-700 pt-0.5">{step}</span>
+              </li>
+            ))}
+          </ol>
+        </section>
+
+        <section aria-labelledby="info-title" class="p-5 sm:p-8 md:border-l border-t md:border-t-0 border-gray-100">
+          <h2 id="info-title" class="text-xl sm:text-2xl text-gray-900">{t("download.file")}</h2>
+          <dl class="mt-4 divide-y divide-gray-100 text-sm">
+            {info.map((row) => (
+              <div class="flex justify-between gap-4 py-2.5">
+                <dt class="text-gray-600">{row.label}</dt>
+                <dd class="font-semibold text-gray-900 text-right">{row.value}</dd>
+              </div>
+            ))}
+          </dl>
+          {
+            sha256 && (
+              <div class="mt-4">
+                <p class="text-sm font-semibold text-gray-900">{t("download.checksum")}</p>
+                <p class="mt-1 break-all rounded-lg bg-gray-100 px-3 py-2 font-mono text-xs text-gray-800">{sha256}</p>
+                <p class="mt-1 text-xs text-gray-600">{t("download.checksum.help")}</p>
+              </div>
+            )
+          }
+        </section>
+      </div>
+    </article>
+
+    <!-- Alternativa web -->
+    <aside class="mt-8 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 rounded-2xl bg-white border border-gray-100 shadow-sm p-5 sm:p-6">
+      <div>
+        <h2 class="text-xl text-gray-900">{t("download.webapp.title")}</h2>
+        <p class="mt-1 text-gray-700">{t("download.webapp.text")}</p>
+      </div>
+      <div class="flex flex-col min-[400px]:flex-row gap-3 w-full sm:w-auto">
+        <Link href={webAppLinks.register} text={t("hero.cta.primary")} variant="primary" />
+        <Link href={webAppLinks.login} text={t("nav.login")} variant="outline" />
+      </div>
+    </aside>
+  </div>
+</main>
+
+<style>
+  .screens {
+    scrollbar-width: thin;
+    scrollbar-color: #9ca3af transparent;
+  }
+</style>
+
+<script>
+  const link = document.getElementById("apk-download") as HTMLAnchorElement | null;
+  const statusEl = document.getElementById("apk-status");
+  const desktopNote = document.getElementById("apk-desktop");
+
+  // Aviso para quien no navega desde Android
+  if (desktopNote && !/android/i.test(navigator.userAgent)) {
+    desktopNote.classList.remove("hidden");
+  }
+
+  const showStatus = (message: string, kind: "info" | "success" | "error") => {
+    if (!statusEl) return;
+    statusEl.textContent = message;
+    statusEl.classList.remove(
+      "hidden",
+      "bg-sky-50", "text-sky-900", "border-sky-200",
+      "bg-green-50", "text-green-900", "border-green-200",
+      "bg-red-50", "text-red-900", "border-red-200",
+    );
+    statusEl.classList.add("border");
+    const styles = {
+      info: ["bg-sky-50", "text-sky-900", "border-sky-200"],
+      success: ["bg-green-50", "text-green-900", "border-green-200"],
+      error: ["bg-red-50", "text-red-900", "border-red-200"],
+    }[kind];
+    statusEl.classList.add(...styles);
+  };
+
+  let verified = false;
+  let busy = false;
+
+  /**
+   * Antes de descargar, comprueba con una petición HEAD que el APK existe y
+   * no es una página HTML de error. Si todo es correcto se dispara la
+   * descarga nativa del enlace (atributo download → "NeuroZen.apk").
+   * Sin JavaScript, el enlace funciona directamente.
+   */
+  link?.addEventListener("click", async (event) => {
+    if (verified) {
+      verified = false;
+      showStatus(link.dataset.started ?? "", "success");
+      return; // deja que el navegador descargue el archivo
+    }
+    event.preventDefault();
+    if (busy) return;
+    busy = true;
+    link.setAttribute("aria-disabled", "true");
+    link.setAttribute("aria-busy", "true");
+    showStatus(link.dataset.checking ?? "", "info");
+
+    try {
+      const controller = new AbortController();
+      const timer = setTimeout(() => controller.abort(), 10000);
+      const res = await fetch(link.href, {
+        method: "HEAD",
+        cache: "no-store",
+        signal: controller.signal,
+      });
+      clearTimeout(timer);
+      const type = res.headers.get("content-type") ?? "";
+      const length = Number(res.headers.get("content-length") ?? "1");
+      if (!res.ok || type.includes("text/html") || length === 0) {
+        throw new Error(`APK no disponible (${res.status})`);
+      }
+      verified = true;
+      link.click();
+    } catch (error) {
+      console.error(error);
+      showStatus(link.dataset.error ?? "", "error");
+    } finally {
+      busy = false;
+      link.removeAttribute("aria-disabled");
+      link.removeAttribute("aria-busy");
+    }
+  });
+</script>

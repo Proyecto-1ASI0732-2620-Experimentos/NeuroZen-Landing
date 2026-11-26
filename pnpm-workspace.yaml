@@ -1,4 +1,8 @@
 allowBuilds:
-  '@tailwindcss/oxide': set this to true or false
-  esbuild: set this to true or false
-  sharp: set this to true or false
+  '@tailwindcss/oxide': true
+  esbuild: true
+  sharp: true
+
+# Seguridad de la cadena de suministro: no instalar versiones publicadas
+# hace menos de 24 h (comportamiento por defecto de pnpm 11+).
+minimumReleaseAge: 1440

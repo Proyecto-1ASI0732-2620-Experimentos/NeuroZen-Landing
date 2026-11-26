@@ -1,16 +1,40 @@
-<div
-  class="group border p-1 border-white rounded-full hover:bg-white cursor-pointer"
+---
+import type { SocialNetwork } from "@/consts/social";
+import { getLangFromUrl, useTranslations } from "@/i18n/utils";
+
+interface Props {
+  href: string;
+  label: string;
+  network: SocialNetwork;
+}
+
+const { href, label, network } = Astro.props;
+const t = useTranslations(getLangFromUrl(Astro.url));
+
+const paths: Record<SocialNetwork, string> = {
+  facebook:
+    "M13.397,20.997v-8.196h2.765l0.411-3.209h-3.176V7.548c0-0.926,0.258-1.56,1.587-1.56h1.684V3.127C15.849,3.039,15.025,2.997,14.201,3c-2.444,0-4.122,1.492-4.122,4.231v2.355H7.332v3.209h2.753v8.202H13.397z",
+  x: "M17.75 3h3.07l-6.7 7.66L22 21h-6.17l-4.83-6.32L5.47 21H2.4l7.17-8.2L2 3h6.33l4.37 5.77L17.75 3zm-1.08 16.17h1.7L7.4 4.74H5.58l11.09 14.43z",
+  instagram:
+    "M12 7.38a4.62 4.62 0 1 0 0 9.24 4.62 4.62 0 0 0 0-9.24zm0 7.62a3 3 0 1 1 0-6 3 3 0 0 1 0 6zm4.81-8.87a1.08 1.08 0 1 0 0 2.16 1.08 1.08 0 0 0 0-2.16zM20.53 6.1a4.6 4.6 0 0 0-2.63-2.63 6.6 6.6 0 0 0-2.19-.42C14.75 3 14.44 3 12 3s-2.76 0-3.71.05a6.6 6.6 0 0 0-2.18.42A4.6 4.6 0 0 0 3.48 6.1a6.6 6.6 0 0 0-.42 2.19C3 9.25 3 9.56 3 12s0 2.75.06 3.71c.01.75.15 1.49.42 2.19a4.6 4.6 0 0 0 2.63 2.63c.7.27 1.44.43 2.19.45.96.04 1.27.05 3.71.05s2.76 0 3.71-.05a6.6 6.6 0 0 0 2.19-.42 4.6 4.6 0 0 0 2.63-2.63c.26-.7.4-1.44.42-2.19.04-.96.05-1.27.05-3.71s0-2.75-.05-3.71a6.5 6.5 0 0 0-.43-2.22z",
+};
+---
+
+<a
+  href={href}
+  target="_blank"
+  rel="noopener noreferrer"
+  aria-label={`${label} ${t("a11y.newTab")}`}
+  class="group inline-flex items-center justify-center size-11 border border-white rounded-full hover:bg-white transition-colors duration-200"
 >
-  <a href="#">
-    <svg
-      fill="#fff"
-      xmlns="http://www.w3.org/2000/svg"
-      width="30"
-      height="30"
-      viewBox="0 0 24 24"
-      class="group-hover:fill-[#0a5c20] transition-colors duration-200"
-    >
-      <slot />
-    </svg>
-  </a>
-</div>
+  <svg
+    xmlns="http://www.w3.org/2000/svg"
+    width="26"
+    height="26"
+    viewBox="0 0 24 24"
+    class="fill-white group-hover:fill-[#0a5c20] transition-colors duration-200"
+    aria-hidden="true"
+  >
+    <path d={paths[network]}></path>
+  </svg>
+</a>

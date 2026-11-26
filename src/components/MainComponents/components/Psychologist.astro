@@ -2,7 +2,9 @@
 import type { Psychologist } from "@/types/psychologist";
 import { formatPsychologistName } from "@/helpers/formatPsychologistName";
 import Link from "../ui/Link.astro";
-import { pendingActionUrl } from "@/consts/links";
+import { webAppLinks } from "@/consts/links";
+import { Image } from "astro:assets";
+import type { ImageMetadata } from "astro";
 import { getLangFromUrl, useTranslations } from "@/i18n/utils";
 
 interface Props {
@@ -15,14 +17,15 @@ const lang = getLangFromUrl(Astro.url);
 const t = useTranslations(lang);
 
 const psychologistName = formatPsychologistName(psychologist);
-const imageAlt = `Foto ${psychologistName}`;
+const imageAlt = `${t("psychologists.photoAlt")} ${psychologistName}`;
 const isEven = index % 2 === 0;
 
-const bookSessionUrl = pendingActionUrl;
+// Reserva real en la Web App (si no hay sesión, redirige a /login y vuelve).
+const bookSessionUrl = webAppLinks.bookSession;
 ---
 
 <article
-  class={`psychologist-card group flex flex-col ${isEven ? "md:flex-row" : "md:flex-row-reverse"} gap-6 items-center bg-white rounded-2xl p-6 shadow-lg hover:shadow-2xl transition-all duration-300 hover:scale-[1.02] max-w-4xl mx-auto`}
+  class={`psychologist-card group flex flex-col ${isEven ? "md:flex-row" : "md:flex-row-reverse"} gap-6 items-center bg-white rounded-2xl p-6 shadow-lg hover:shadow-2xl transition-all duration-300 max-w-4xl w-full mx-auto`}
 >
   <!-- Imagen del psicólogo -->
   <div class="relative flex-shrink-0">
@@ -31,14 +34,17 @@ const bookSessionUrl = pendingActionUrl;
     >
     </div>
     <div class="relative">
-      <img
+      <Image
         class="relative rounded-full w-32 h-32 md:w-40 md:h-40 object-cover border-4 border-white shadow-xl group-hover:scale-105 transition-transform duration-300"
-        src={psychologist.img}
+        src={psychologist.img as ImageMetadata}
         alt={imageAlt}
+        width={320}
+        height={320}
         loading="lazy"
       />
       <div
-        class="absolute bottom-0 right-0 bg-green-500 text-white rounded-full w-10 h-10 flex items-center justify-center shadow-lg border-2 border-black"
+        class="absolute bottom-0 right-0 bg-brand text-white rounded-full w-10 h-10 flex items-center justify-center shadow-lg border-2 border-white"
+        aria-hidden="true"
       >
         <svg
           xmlns="http://www.w3.org/2000/svg"
@@ -71,6 +77,7 @@ const bookSessionUrl = pendingActionUrl;
         <svg
           xmlns="http://www.w3.org/2000/svg"
           class="w-4 h-4"
+          aria-hidden="true"
           fill="none"
           viewBox="0 0 24 24"
           stroke="currentColor"
@@ -92,7 +99,8 @@ const bookSessionUrl = pendingActionUrl;
     <Link
       href={bookSessionUrl}
       text={t("psychologists.schedule")}
-      styles="mt-2 px-6 py-2.5 self-center md:self-start"
+      styles="mt-2 self-center md:self-start"
+      aria-label={`${t("psychologists.schedule")}: ${psychologistName}`}
     />
   </div>
 </article>
@@ -100,7 +108,6 @@ const bookSessionUrl = pendingActionUrl;
 <style>
   .psychologist-card {
     animation: fadeInUp 0.6s ease-out forwards;
-    opacity: 0;
   }
 
   @keyframes fadeInUp {

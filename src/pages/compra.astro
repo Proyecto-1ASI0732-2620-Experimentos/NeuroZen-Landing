@@ -1,0 +1,62 @@
+---
+/**
+ * Compatibilidad con la antigua página de compra.
+ * Antes mostraba un formulario de pago que pedía datos de tarjeta y simulaba
+ * una compra exitosa sin ninguna integración real. Ahora redirige a la
+ * compra real de la Web App conservando el plan (?plan=...).
+ */
+import Layout from "@/layouts/Layout.astro";
+import { webAppLinks } from "@/consts/links";
+import { getLangFromUrl, getLocalizedPath, useTranslations } from "@/i18n/utils";
+
+const lang = getLangFromUrl(Astro.url);
+const t = useTranslations(lang);
+---
+
+<Layout title={`${t("redirect.title")} · NeuroZen`} noindex>
+  <meta slot="head" http-equiv="refresh" content={`3;url=${webAppLinks.plans}`} />
+  <main
+    id="contenido"
+    class="min-h-screen flex items-center justify-center bg-[#F4FAF6] px-6"
+    data-plans={webAppLinks.plans}
+    data-register={webAppLinks.register}
+    data-purchase={webAppLinks.purchase("advanced")}
+  >
+    <div class="max-w-lg text-center">
+      <h1 class="text-3xl font-bold text-gray-900">{t("redirect.title")}</h1>
+      <p class="mt-4 text-gray-700">{t("redirect.text")}</p>
+      <div class="mt-8 flex flex-col sm:flex-row gap-3 justify-center">
+        <a id="redirect-link" href={webAppLinks.plans} class="btn btn-primary">{t("redirect.link")}</a>
+        <a href={getLocalizedPath(lang)} class="btn btn-outline">{t("404.button")}</a>
+      </div>
+    </div>
+  </main>
+</Layout>
+
+<script>
+  const main = document.getElementById("contenido");
+  const link = document.getElementById("redirect-link") as HTMLAnchorElement | null;
+  const raw = (new URLSearchParams(window.location.search).get("plan") ?? "")
+    .trim()
+    .toLowerCase();
+
+  // Acepta los nombres antiguos (ES/EN) y las claves de la Web App.
+  const map: Record<string, string> = {
+    "básico": "basic", basico: "basic", basic: "basic",
+    avanzado: "advanced", advanced: "advanced",
+    profesional: "professional", professional: "professional",
+    "professional (zen+)": "professional", "profesional (zen+)": "professional",
+  };
+  const plan = map[raw];
+
+  let target = main?.dataset.plans ?? "";
+  if (plan === "basic") target = main?.dataset.register ?? target;
+  else if (plan && main?.dataset.purchase) {
+    target = main.dataset.purchase.replace(/plan=[^&]*/, `plan=${plan}`);
+  }
+
+  if (target) {
+    if (link) link.href = target;
+    window.location.replace(target);
+  }
+</script>

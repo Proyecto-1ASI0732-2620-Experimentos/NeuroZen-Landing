@@ -1,191 +1,100 @@
 # 🧠 NeuroZen Landing Page
 
-Landing page for NeuroZen - A platform transforming workplace wellness through technology. Built with Astro, featuring bilingual support (Spanish/English) and modern responsive design.
+Landing page de NeuroZen, la plataforma que transforma el bienestar laboral mediante la tecnología. Construida con **Astro 5** y **Tailwind CSS 4**, con soporte bilingüe (español / inglés).
 
-## ✨ Features
+## ✨ Funcionalidades
 
-- 🌍 **Internationalization (i18n)**: Full support for Spanish and English with seamless language switching
-- 📱 **Fully Responsive**: Optimized for all screen sizes from mobile to desktop
-- 🎨 **Modern UI/UX**: Clean design with smooth animations and transitions
-- 🚀 **Fast Performance**: Built with Astro for optimal loading speeds
-- ♿ **Accessible**: Semantic HTML and ARIA labels for better accessibility
-- 💳 **Purchase Flow**: Complete checkout experience with plan selection
-- 👨‍⚕️ **Psychologists Section**: Showcase of certified professionals
-- 💬 **Testimonials Carousel**: Interactive carousel with user reviews
-- 📊 **Pricing Plans**: Three tiers (Basic, Advanced, Professional) 
+- 🌍 **i18n ES/EN**: todos los textos están en `src/i18n/ui.ts` (192 claves por idioma).
+- 🔐 **Accesos a la Web App**: «Iniciar sesión» y «Crear cuenta» en el header y en el menú móvil.
+- 🚀 **CTA principal claro**: «Comenzar gratis» → registro en la Web App.
+- 📱 **Descarga Android (APK)**: ficha de la app en `/descargar` (`/en/download`) con descarga directa del APK.
+- 💳 **Planes**: cada botón lleva a su destino real (registro gratuito o compra en la Web App).
+- 👩‍⚕️ **Psicólogos**: «Agendar cita» → reserva en la Web App.
+- ♿ **Accesibilidad**: contraste WCAG 2.1 AA, foco visible, navegación por teclado y lectores de pantalla.
+- ⚡ **Rendimiento**: imágenes optimizadas a WebP con `astro:assets`, carga diferida.
 
-## 🚀 Project Structure
+## 🔗 Destinos de la Web App
+
+Todas las rutas están centralizadas en `src/consts/links.ts` y se verificaron contra el router de
+<https://neurozen-web-frontend.vercel.app/>:
+
+| Acción | Ruta |
+| --- | --- |
+| Crear cuenta / Comenzar gratis | `/register` |
+| Iniciar sesión | `/login` |
+| Ver planes | `/subscriptions` |
+| Comprar plan | `/subscriptions/purchase?plan=advanced\|professional` |
+| Agendar cita | `/book-session` |
+| Directorio de psicólogos | `/therapists` |
+
+Las rutas protegidas redirigen a `/login?redirect=…` y, tras iniciar sesión, la Web App devuelve al usuario al destino.
+
+## 📱 Aplicación Android (APK)
+
+- Archivo: `public/downloads/NeuroZen.apk` → URL pública `/downloads/NeuroZen.apk`.
+- Datos mostrados (versión, requisitos) en `src/consts/app.ts`; tamaño y SHA-256 se calculan en el build.
+- `vercel.json` sirve el APK con `Content-Type: application/vnd.android.package-archive` y
+  `Content-Disposition: attachment; filename="NeuroZen.apk"`.
+- Para publicar una nueva versión: reemplaza el APK y actualiza `version` en `src/consts/app.ts`.
+
+## 🚀 Estructura
 
 ```text
 /
 ├── public/
-│   └── favicon.png
+│   ├── downloads/NeuroZen.apk   # APK servido como archivo estático
+│   ├── favicon.png, apple-touch-icon.png, og-image.png
+├── scripts/verify-dist.mjs      # verificación del build (enlaces, idioma, APK)
 ├── src/
-│   ├── assets/
-│   │   ├── Gifs/
-│   │   ├── Icons/
-│   │   ├── images/
-│   │   └── Redes_Sociales/
+│   ├── assets/                  # imágenes (incl. capturas de la app en AppScreens/)
 │   ├── components/
+│   │   ├── DownloadComponents/  # ficha de descarga del APK
+│   │   ├── ErrorComponents/     # 404 bilingüe
 │   │   ├── FooterComponents/
-│   │   ├── HeaderComponents/
-│   │   ├── HeroComponents/
-│   │   └── MainComponents/
-│   ├── consts/
-│   │   ├── comments.ts
-│   │   ├── menu-item.ts
-│   │   └── psychologists.ts
-│   ├── helpers/
-│   │   └── formatPsychologistName.ts
-│   ├── i18n/
-│   │   ├── ui.ts
-│   │   └── utils.ts
-│   ├── layouts/
-│   │   └── Layout.astro
-│   ├── pages/
-│   │   ├── index.astro
-│   │   ├── compra.astro
-│   │   ├── 404.astro
-│   │   └── en/
-│   │       ├── index.astro
-│   │       ├── compra.astro
-│   │       └── 404.astro
-│   ├── styles/
-│   │   └── global.css
-│   └── types/
-│       ├── comment.ts
-│       ├── MenuItem.ts
-│       └── Psychologist.ts
+│   │   ├── HeaderComponents/    # header, menú móvil, selector de idioma
+│   │   └── MainComponents/      # secciones de la home y UI (botones)
+│   ├── consts/                  # links.ts, app.ts, social.ts, menú, datos
+│   ├── i18n/                    # ui.ts (traducciones) y utils.ts (rutas localizadas)
+│   ├── layouts/Layout.astro     # SEO, Open Graph, hreflang
+│   ├── pages/                   # index, descargar, compra (redirección), 404 + en/
+│   └── styles/global.css        # tokens de marca y estilos de botones
 ├── astro.config.mjs
-├── tailwind.config.mjs
+├── vercel.json
 └── package.json
 ```
 
-## 🛠️ Tech Stack
+## 📄 Páginas
 
-- **Framework**: [Astro](https://astro.build) v5.14.3
-- **Styling**: [Tailwind CSS](https://tailwindcss.com)
-- **Language**: TypeScript
-- **Package Manager**: pnpm
-- **Node Version**: v22.19.0
+| Español | Inglés | Descripción |
+| --- | --- | --- |
+| `/` | `/en/` | Home |
+| `/descargar` | `/en/download` | Descarga de la app Android |
+| `/compra` | `/en/compra` | Compatibilidad: redirige a la compra real en la Web App |
+| `/playstore` | `/en/playstore` | Compatibilidad: redirige a la página de descarga |
+| `/404` | `/en/404` | Página no encontrada |
 
-## 🌐 Internationalization
+## 🧞 Comandos
 
-The site supports two languages:
+| Comando | Acción |
+| :-- | :-- |
+| `pnpm install` | Instala dependencias |
+| `pnpm dev` | Servidor local en `localhost:4321` |
+| `pnpm build` | Build de producción en `./dist/` |
+| `pnpm preview` | Previsualiza el build |
+| `pnpm check` | Verificación de tipos (`astro check`) |
+| `pnpm verify` | Verifica `dist/`: enlaces, anclas, idioma y validez del APK |
+| `node tests/e2e.cjs` | Pruebas E2E con Playwright + axe-core (ver cabecera del archivo) |
 
-- 🇪🇸 Spanish (default) - Available at `/`
-- 🇬🇧 English - Available at `/en/`
+## 🔧 Configuración
 
-Translations are managed in `src/i18n/ui.ts` with over 160 translation keys covering all sections.
+- **URL del sitio** (canonical, hreflang y Open Graph absolutos): define `SITE_URL`
+  (p. ej. `SITE_URL=https://tu-dominio.com`). En Vercel se usa automáticamente el dominio de producción.
+- **Redes sociales**: añade los perfiles reales en `src/consts/social.ts` y aparecerán en el footer.
+- **Colores de marca**: `src/styles/global.css` (`--color-brand: #2D5A4A`, contraste 7.86:1 con blanco).
 
-## 🧞 Commands
+## 🛠️ Stack
 
-All commands are run from the root of the project, from a terminal:
-
-| Command                | Action                                           |
-| :--------------------- | :----------------------------------------------- |
-| `pnpm install`         | Installs dependencies                            |
-| `pnpm dev`             | Starts local dev server at `localhost:4321`      |
-| `pnpm build`           | Build your production site to `./dist/`          |
-| `pnpm preview`         | Preview your build locally, before deploying     |
-| `pnpm astro ...`       | Run CLI commands like `astro add`, `astro check` |
-| `pnpm astro -- --help` | Get help using the Astro CLI                     |
-
-## 📄 Pages
-
-### Main Pages
-
-- **Home** (`/`, `/en/`): Landing page with all sections
-  - Hero section with CTA
-  - Benefits showcase
-  - Wellness exercises gallery
-  - Pricing plans
-  - User testimonials carousel
-  - Psychologists team
-- **Purchase** (`/compra`, `/en/compra`): Checkout page
-
-  - Plan selection display
-  - Payment form
-  - Language switcher
-  - Query parameters preserved across language changes
-
-- **404** (`/404`, `/en/404`): Custom error pages for both languages
-
-## 🎨 Key Components
-
-### Layout Components
-
-- **Header**: Fixed navigation with language switcher and mobile menu
-- **Footer**: Multi-column footer with social links and newsletter signup
-- **Layout**: Base layout with SEO meta tags
-
-### Main Components
-
-- **Hero**: Landing section with gradient background
-- **Benefits**: Feature cards with icons
-- **Gallery**: Image showcase with grid layout
-- **Prices**: Three-tier pricing cards with feature lists
-- **Comments**: Interactive testimonials carousel
-- **Psychologists**: Team showcase with professional profiles
-
-### UI Components
-
-- **Link**: Reusable button/link component with gradient styles
-- **LanguageSwitcher**: Toggle between Spanish/English with flag icons
-- **MobileMenu**: Responsive hamburger menu
-
-## 🔧 Configuration
-
-### Astro Config (`astro.config.mjs`)
-
-```javascript
-i18n: {
-  defaultLocale: 'es',
-  locales: ['es', 'en'],
-  routing: {
-    prefixDefaultLocale: false
-  }
-}
-```
-
-### Tailwind Config
-
-Custom color palette with green theme and gradient utilities.
-
-## 🎯 SEO Features
-
-- Meta descriptions and keywords
-- Open Graph tags
-- Semantic HTML structure
-- Proper heading hierarchy
-- Alt text for all images
-- Sitemap ready
-
-## 📱 Responsive Design
-
-Breakpoints:
-
-- **Mobile**: < 768px
-- **Tablet**: 768px - 1024px
-- **Desktop**: > 1024px
-
-All components are mobile-first with responsive utilities.
-
-## 🚀 Deployment
-
-The project is ready to be deployed to any static hosting platform:
-
-```sh
-pnpm build
-```
-
-The built files will be in the `./dist/` directory.
-
-## 👀 Want to learn more?
-
-- [Astro Documentation](https://docs.astro.build)
-- [Tailwind CSS Documentation](https://tailwindcss.com/docs)
-- [TypeScript Documentation](https://www.typescriptlang.org/docs/)
+- [Astro](https://astro.build) 5.14 · [Tailwind CSS](https://tailwindcss.com) 4.1 · TypeScript · pnpm · Node 22
 
 ---
 

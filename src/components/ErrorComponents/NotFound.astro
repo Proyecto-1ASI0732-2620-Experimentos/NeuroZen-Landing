@@ -1,0 +1,72 @@
+---
+/**
+ * Página 404 bilingüe. El hosting estático sirve /404.html para cualquier
+ * ruta inexistente (también bajo /en/), así que el idioma se ajusta en el
+ * cliente según la URL solicitada.
+ */
+import { ui } from "@/i18n/ui";
+import { getLangFromUrl } from "@/i18n/utils";
+
+const lang = getLangFromUrl(Astro.url);
+const copy = (l: "es" | "en") => ({
+  title: ui[l]["404.title"],
+  description: ui[l]["404.description"],
+  button: ui[l]["404.button"],
+  home: l === "en" ? "/en/" : "/",
+});
+const es = copy("es");
+const en = copy("en");
+const c = lang === "en" ? en : es;
+---
+
+<main
+  id="contenido"
+  class="on-dark min-h-screen flex items-center justify-center bg-gradient-to-b from-[#033612] to-[#0a5c20] px-6"
+  data-es={JSON.stringify(es)}
+  data-en={JSON.stringify(en)}
+>
+  <div class="max-w-2xl w-full text-center">
+    <p
+      class="text-9xl md:text-[200px] font-bold text-white/20 leading-none mb-8"
+      aria-hidden="true"
+    >
+      404
+    </p>
+
+    <div class="space-y-6">
+      <h1 data-nf="title" class="text-4xl md:text-5xl font-bold text-white">
+        {c.title}
+      </h1>
+      <p data-nf="description" class="text-xl text-green-100 max-w-lg mx-auto">
+        {c.description}
+      </p>
+      <div class="pt-8">
+        <a data-nf="button" href={c.home} class="btn btn-light text-lg px-8 py-4">
+          <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" aria-hidden="true">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18"></path>
+          </svg>
+          <span data-nf="label">{c.button}</span>
+        </a>
+      </div>
+    </div>
+  </div>
+</main>
+
+<script>
+  const main = document.getElementById("contenido");
+  const isEn = /^\/en(\/|$)/.test(window.location.pathname);
+  const data = main?.dataset[isEn ? "en" : "es"];
+  if (data) {
+    const c = JSON.parse(data);
+    document.documentElement.lang = isEn ? "en" : "es";
+    document.title = `${c.title} · NeuroZen`;
+    const set = (k: string, v: string) => {
+      const el = document.querySelector(`[data-nf="${k}"]`);
+      if (el) el.textContent = v;
+    };
+    set("title", c.title);
+    set("description", c.description);
+    set("label", c.button);
+    document.querySelector<HTMLAnchorElement>('[data-nf="button"]')?.setAttribute("href", c.home);
+  }
+</script>

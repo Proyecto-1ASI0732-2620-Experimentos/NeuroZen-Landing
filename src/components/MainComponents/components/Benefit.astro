@@ -8,11 +8,12 @@ const { benefitNumber, title } = Astro.props;
 ---
 
 <li
-  class="group flex flex-col gap-3 p-5 rounded-xl hover:bg-white/50 transition-all duration-300 hover:shadow-lg hover:scale-[1.02]"
+  class="group flex flex-col gap-3 p-5 rounded-xl hover:bg-white/50 transition-all duration-300 hover:shadow-lg"
 >
-  <h3 class="font-bold text-lg flex items-center gap-3">
+  <h3 class="font-bold text-lg text-gray-800 flex items-center gap-3 mb-0">
     <span
-      class="number text-white inline-flex items-center justify-center rounded-full w-10 h-10 text-lg font-bold shadow-md group-hover:scale-110 transition-transform duration-300"
+      aria-hidden="true"
+      class="number text-white inline-flex items-center justify-center rounded-full w-10 h-10 shrink-0 text-lg font-bold shadow-md group-hover:scale-110 transition-transform duration-300"
     >
       {benefitNumber}
     </span>
@@ -20,18 +21,19 @@ const { benefitNumber, title } = Astro.props;
       >{title}</span
     >
   </h3>
-  <div class="pl-[52px]">
+  <div class="pl-0 sm:pl-[52px]">
     <slot />
   </div>
 </li>
 
 <style>
+  /* Fondo sólido de marca: contraste 7.86:1 con el número blanco */
   .number {
-    background-image: linear-gradient(135deg, #44b44d 0%, #76ca50 100%);
-    box-shadow: 0 4px 15px rgba(68, 180, 77, 0.3);
+    background-color: var(--color-brand);
+    box-shadow: 0 4px 15px rgba(45, 90, 74, 0.3);
   }
 
   .group:hover .number {
-    box-shadow: 0 6px 20px rgba(68, 180, 77, 0.5);
+    box-shadow: 0 6px 20px rgba(45, 90, 74, 0.45);
   }
 </style>

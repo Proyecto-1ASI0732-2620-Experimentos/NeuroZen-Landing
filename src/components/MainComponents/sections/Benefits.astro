@@ -14,7 +14,7 @@ const t = useTranslations(lang);
   description={t("benefits.description")}
 >
   <div
-    class="flex flex-col gap-10 items-center justify-center px-6 md:px-12 lg:flex-row max-w-7xl mx-auto"
+    class="flex flex-col gap-10 items-center justify-center px-2 sm:px-6 md:px-12 lg:flex-row max-w-7xl mx-auto"
   >
     <!-- Imagen con efecto -->
     <div class="lg:w-1/2 flex justify-center">
@@ -26,7 +26,11 @@ const t = useTranslations(lang);
         <img
           class="relative object-contain rounded-2xl shadow-2xl max-w-full h-auto"
           src={BeneficiosGif.src}
-          alt="Mujer meditando"
+          width={BeneficiosGif.width}
+          height={BeneficiosGif.height}
+          alt={t("benefits.imageAlt")}
+          loading="lazy"
+          decoding="async"
         />
       </div>
     </div>

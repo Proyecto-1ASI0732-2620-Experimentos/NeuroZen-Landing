@@ -1,4 +1,5 @@
 ---
+import { getImage } from "astro:assets";
 import Section from "../components/Section.astro";
 import ImagenGaleria1 from "@/assets/images/Galeria/uno.jpg";
 import ImagenGaleria2 from "@/assets/images/Galeria/dos.jpg";
@@ -11,29 +12,27 @@ import { getLangFromUrl, useTranslations } from "@/i18n/utils";
 const lang = getLangFromUrl(Astro.url);
 const t = useTranslations(lang);
 
-const galleryImages = [
-  { src: ImagenGaleria1.src, alt: "Mujer meditando en un campo al atardecer" },
-  {
-    src: ImagenGaleria2.src,
-    alt: "Pareja corriendo por un sendero al sol de la mañana",
-  },
-  {
-    src: ImagenGaleria3.src,
-    alt: "Grupo de personas haciendo ejercicios al aire libre",
-  },
-  {
-    src: ImagenGaleria4.src,
-    alt: "Hombre relajándose escuchando música con auriculares",
-  },
-  {
-    src: ImagenGaleria5.src,
-    alt: "Persona leyendo un libro cómodamente sentada",
-  },
-  {
-    src: ImagenGaleria6.src,
-    alt: "Grupo de personas tomadas de la mano en un parque con luz natural",
-  },
+const sources = [
+  ImagenGaleria1,
+  ImagenGaleria2,
+  ImagenGaleria3,
+  ImagenGaleria4,
+  ImagenGaleria5,
+  ImagenGaleria6,
 ];
+
+// Miniaturas y versión ampliada optimizadas (WebP) en tiempo de build.
+const galleryImages = await Promise.all(
+  sources.map(async (src, i) => {
+    const thumb = await getImage({ src, width: 800, format: "webp" });
+    const full = await getImage({ src, width: 1600, format: "webp" });
+    return {
+      thumb: thumb.src,
+      full: full.src,
+      alt: t(`gallery.alt.${i + 1}` as any) as string,
+    };
+  }),
+);
 ---
 
 <Section
@@ -41,32 +40,40 @@ const galleryImages = [
   title={t("exercises.title")}
   description={t("exercises.description")}
   hasGreenBg
-  styles="p-15 pt-8"
+  styles="pb-16 sm:px-8"
 >
   <div
     class="gallery-container grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 max-w-7xl mx-auto px-4"
   >
     {
       galleryImages.map((image, index) => (
-        <div
-          class="gallery-item group relative overflow-hidden rounded-2xl shadow-lg hover:shadow-2xl transition-all duration-300 cursor-pointer"
+        <button
+          type="button"
+          class="gallery-item group block w-full p-0 border-0 relative overflow-hidden rounded-2xl shadow-lg hover:shadow-2xl transition-all duration-300 cursor-pointer text-left"
           data-index={index}
+          data-full={image.full}
+          aria-label={`${t("gallery.open")}: ${image.alt}`}
+          aria-haspopup="dialog"
         >
           <img
-            src={image.src}
+            src={image.thumb}
             class="gallery-image w-full h-64 object-cover transform group-hover:scale-110 transition-transform duration-500"
             alt={image.alt}
+            width="800"
+            height="533"
             loading="lazy"
+            decoding="async"
           />
-          <div class="gallery-overlay absolute inset-0 bg-gradient-to-t from-black/70 via-black/20 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex items-end p-4 text-start">
-            <p class="text-white text-sm font-medium transform translate-y-4 group-hover:translate-y-0 transition-transform duration-300">
-              {image.alt}
-            </p>
-          </div>
-          <div class="absolute top-3 right-3 bg-white/90 backdrop-blur-sm rounded-full w-8 h-8 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity duration-300">
+          <span class="gallery-overlay absolute inset-0 bg-gradient-to-t from-black/70 via-black/20 to-transparent opacity-0 group-hover:opacity-100 group-focus-visible:opacity-100 transition-opacity duration-300 flex items-end p-4 text-start">
+            <span class="text-white text-sm font-medium">{image.alt}</span>
+          </span>
+          <span
+            aria-hidden="true"
+            class="absolute top-3 right-3 bg-white/90 backdrop-blur-sm rounded-full w-8 h-8 flex items-center justify-center opacity-0 group-hover:opacity-100 group-focus-visible:opacity-100 transition-opacity duration-300"
+          >
             <svg
               xmlns="http://www.w3.org/2000/svg"
-              class="w-5 h-5 text-green-600"
+              class="w-5 h-5 text-brand"
               fill="none"
               viewBox="0 0 24 24"
               stroke="currentColor"
@@ -78,8 +85,8 @@ const galleryImages = [
                 d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0zM10 7v6m3-3H7"
               />
             </svg>
-          </div>
-        </div>
+          </span>
+        </button>
       ))
     }
   </div>
@@ -87,13 +94,17 @@ const galleryImages = [
   <!-- Lightbox Modal -->
   <div
     id="lightbox"
-    class="fixed inset-0 bg-black/95 z-50 hidden items-center justify-center p-4"
+    role="dialog"
+    aria-modal="true"
+    aria-label={t("gallery.dialog")}
+    class="on-dark fixed inset-0 bg-black/95 z-[80] hidden items-center justify-center p-4"
   >
     <!-- Close Button -->
     <button
       id="lightbox-close"
       class="absolute top-4 right-4 z-50 text-white hover:text-green-400 transition-colors duration-200 bg-black/50 backdrop-blur-sm rounded-full p-3 hover:scale-110"
-      aria-label="Cerrar lightbox"
+      type="button"
+      aria-label={t("gallery.close")}
     >
       <svg
         xmlns="http://www.w3.org/2000/svg"
@@ -114,7 +125,8 @@ const galleryImages = [
     <button
       id="lightbox-prev"
       class="absolute left-4 top-1/2 -translate-y-1/2 z-50 text-white hover:text-green-400 transition-all duration-200 bg-black/50 backdrop-blur-sm rounded-full p-3 hover:scale-110"
-      aria-label="Imagen anterior"
+      type="button"
+      aria-label={t("gallery.prev")}
     >
       <svg
         xmlns="http://www.w3.org/2000/svg"
@@ -135,7 +147,8 @@ const galleryImages = [
     <button
       id="lightbox-next"
       class="absolute right-4 top-1/2 -translate-y-1/2 z-50 text-white hover:text-green-400 transition-all duration-200 bg-black/50 backdrop-blur-sm rounded-full p-3 hover:scale-110"
-      aria-label="Siguiente imagen"
+      type="button"
+      aria-label={t("gallery.next")}
     >
       <svg
         xmlns="http://www.w3.org/2000/svg"
@@ -158,14 +171,13 @@ const galleryImages = [
     >
       <img
         id="lightbox-image"
-        src=""
         alt=""
         class="max-w-full max-h-[80vh] object-contain rounded-lg shadow-2xl"
       />
       <div class="mt-4 text-center">
         <p id="lightbox-caption" class="text-white text-lg font-medium mb-2">
         </p>
-        <p id="lightbox-counter" class="text-green-300 text-sm"></p>
+        <p id="lightbox-counter" class="text-green-200 text-sm" aria-live="polite"></p>
       </div>
     </div>
   </div>
@@ -262,6 +274,7 @@ const galleryImages = [
   const nextBtn = document.getElementById("lightbox-next");
 
   let currentIndex = 0;
+  let lastTrigger: HTMLElement | null = null;
   const totalImages = galleryItems.length;
 
   // Función para abrir el lightbox
@@ -272,17 +285,20 @@ const galleryImages = [
     currentIndex = index;
 
     // Obtener la imagen real desde el DOM
-    const galleryImage = galleryItems[currentIndex].querySelector(
-      "img"
-    ) as HTMLImageElement;
+    const item = galleryItems[currentIndex] as HTMLElement;
+    const galleryImage = item.querySelector("img") as HTMLImageElement;
 
-    lightboxImage.src = galleryImage.src;
+    lightboxImage.src = item.dataset.full || galleryImage.src;
     lightboxImage.alt = galleryImage.alt;
     lightboxCaption.textContent = galleryImage.alt;
     lightboxCounter.textContent = `${currentIndex + 1} / ${totalImages}`;
 
-    lightbox.classList.add("show");
-    document.body.style.overflow = "hidden";
+    if (!lightbox.classList.contains("show")) {
+      lastTrigger = item;
+      lightbox.classList.add("show");
+      document.body.style.overflow = "hidden";
+      closeBtn?.focus();
+    }
   }
 
   // Función para cerrar el lightbox
@@ -290,6 +306,7 @@ const galleryImages = [
     if (!lightbox) return;
     lightbox.classList.remove("show");
     document.body.style.overflow = "";
+    lastTrigger?.focus();
   }
 
   // Función para mostrar imagen anterior
@@ -341,6 +358,17 @@ const galleryImages = [
       case "ArrowRight":
         showNextImage();
         break;
+      case "Tab": {
+        // Mantiene el foco dentro del visor
+        const controls = [closeBtn, prevBtn, nextBtn].filter(Boolean) as HTMLElement[];
+        const idx = controls.indexOf(document.activeElement as HTMLElement);
+        e.preventDefault();
+        const next = e.shiftKey
+          ? controls[(idx - 1 + controls.length) % controls.length]
+          : controls[(idx + 1) % controls.length];
+        next.focus();
+        break;
+      }
     }
   });
 

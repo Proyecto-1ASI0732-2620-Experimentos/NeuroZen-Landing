@@ -3,12 +3,13 @@ import Section from "../components/Section.astro";
 import Psychologist from "../components/Psychologist.astro";
 import { psychologists } from "@/consts/psychologists";
 import Link from "../ui/Link.astro";
-import { pendingActionUrl } from "@/consts/links";
+import { webAppLinks } from "@/consts/links";
 import { getLangFromUrl, useTranslations } from "@/i18n/utils";
 
 const lang = getLangFromUrl(Astro.url);
 const t = useTranslations(lang);
-const bookSessionUrl = pendingActionUrl;
+// Directorio real de psicólogos en la Web App (requiere sesión).
+const therapistsUrl = webAppLinks.therapists;
 ---
 
 <Section
@@ -16,7 +17,7 @@ const bookSessionUrl = pendingActionUrl;
   title={t("psychologists.section.title")}
   description={t("psychologists.section.description")}
   hasGreenBg
-  styles="pt-8 pb-15"
+  styles="pb-16"
 >
   <div class="flex flex-col gap-8 w-full px-4">
     {
@@ -37,9 +38,10 @@ const bookSessionUrl = pendingActionUrl;
       {t("psychologists.cta.help")}
     </p>
     <Link
-      href={bookSessionUrl}
+      href={therapistsUrl}
       text={t("psychologists.cta.find")}
-      styles="px-4 md:px-8 py-3 text-sm md:text-base inline-block"
+      styles="px-6 md:px-8"
     />
+    <p class="mt-4 text-sm text-gray-600">{t("psychologists.loginNote")}</p>
   </div>
 </Section>
