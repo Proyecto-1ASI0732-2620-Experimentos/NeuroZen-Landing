@@ -15,7 +15,7 @@ export const androidApp = {
   downloadPath: "/downloads/NeuroZen.apk",
   /** Ruta del archivo dentro del proyecto, usada en build para tamaño/checksum. */
   projectFile: "public/downloads/NeuroZen.apk",
-  version: "2.2.0",
+  version: "3.3.0",
   minAndroid: "8.0",
   packageName: "com.example.neurozen_front",
   developer: "NeuroZen",
